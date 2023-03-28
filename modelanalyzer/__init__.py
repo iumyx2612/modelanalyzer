@@ -2,4 +2,3 @@
 #
 # SPDX-License-Identifier: MIT
 
-from .visualize_featmap import vis_featmap_single_layer
