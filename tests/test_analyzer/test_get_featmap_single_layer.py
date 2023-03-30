@@ -9,6 +9,7 @@ from torch import Tensor
 from modelanalyzer.analyzer.get_featmap import get_featmap_single_layer
 from tests.data.model import CNNModel
 
+
 def test_get_featmap_single():
     # prepare data and model to test
     image = Image.open(
