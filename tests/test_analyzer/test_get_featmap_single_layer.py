@@ -10,16 +10,16 @@ from modelanalyzer.analyzer.get_featmap import get_featmap_single_layer
 from tests.data.model import CNNModel
 
 
-def test_get_featmap_single():
+@pytest.mark.parametrize("target_layer",
+                         ["model.layer_1[0]",
+                          "layer_1.0"])
+def test_get_featmap_single(target_layer):
     # prepare data and model to test
     image = Image.open(
         os.path.join(os.path.dirname(__file__), "../data/test_car.jpg"))
     image = np.asarray(image)
 
     model = CNNModel()
-
-    # specify correct target layer
-    target_layer = "model.layer_1[2]"
 
     # test false input
     with pytest.raises(TypeError):

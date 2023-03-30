@@ -3,6 +3,7 @@ from torch import Tensor
 from torch.nn import Module
 
 from ..hooks import ForwardIOHook
+from ..utils import get_layer
 
 
 def get_featmap_single_layer(model: Module,
@@ -24,7 +25,7 @@ def get_featmap_single_layer(model: Module,
     if not isinstance(target_layer, str):
         raise TypeError(f"target_layer must be of type 'str', current type {type(target_layer)}")
     model.eval()
-    layer = eval(target_layer)
+    layer = get_layer(model, target_layer)
     hook = ForwardIOHook(layer)
     with torch.no_grad():
         _ = model(image)
