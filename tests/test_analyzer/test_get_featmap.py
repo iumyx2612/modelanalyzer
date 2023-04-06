@@ -14,7 +14,15 @@ from tests.data.model import CNNModel
 @pytest.mark.parametrize("target_layer",
                          ["model.layer_1[0]",
                           "layer_1.0"])
-def test_get_featmap_single(target_layer):
+@pytest.mark.parametrize("average",
+                         [True,
+                          False])
+@pytest.mark.parametrize("input",
+                         [True,
+                          False])
+def test_get_featmap_single(target_layer,
+                            average,
+                            input):
     # prepare data and model to test
     image = Image.open(
         os.path.join(os.path.dirname(__file__), "../data/test_car.jpg"))
@@ -42,14 +50,27 @@ def test_get_featmap_single(target_layer):
     # normal input
     output = get_featmap_single_layer(model,
                                       image,
-                                      target_layer)
+                                      target_layer,
+                                      average=average,
+                                      input=input)
     assert isinstance(output, Tensor)
+    assert output.dim() == 4
+    if average:
+        assert output.shape[1] == 1
 
 
 @pytest.mark.parametrize("target_layers",
                          [["model.layer_1[0]", "layer_1.0"],
                           ["layer_1.0", "model.layer_1[2]"]])
-def test_get_featmap_multi(target_layers):
+@pytest.mark.parametrize("average",
+                         [True,
+                          False])
+@pytest.mark.parametrize("input",
+                         [True,
+                          False])
+def test_get_featmap_multi(target_layers,
+                           average,
+                           input):
     # prepare data and model to test
     image = Image.open(
         os.path.join(os.path.dirname(__file__), "../data/test_car.jpg"))
@@ -82,5 +103,12 @@ def test_get_featmap_multi(target_layers):
     # normal input
     output = get_featmap_multi_layer(model,
                                      image,
-                                     target_layers)
+                                     target_layers,
+                                     average=average,
+                                     input=input)
     assert isinstance(output, list)
+    for _output in output:
+        assert _output.dim() == 4
+    if average:
+        for _output in output:
+            assert _output.shape[1] == 1
