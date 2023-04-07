@@ -47,6 +47,11 @@ def test_get_featmap_single(target_layer,
                                  image,
                                  _target_layer)
 
+    with pytest.raises(AttributeError):
+        get_featmap_single_layer(model,
+                                 image,
+                                 "model.layer1")
+
     # normal input
     output = get_featmap_single_layer(model,
                                       image,
@@ -99,6 +104,12 @@ def test_get_featmap_multi(target_layers,
         get_featmap_multi_layer(model,
                                 image,
                                 [_target_layers])
+
+    with pytest.raises(AttributeError):
+        get_featmap_multi_layer(model,
+                                image,
+                                ["model.layer_1",
+                                 "model.layer1"])
 
     # normal input
     output = get_featmap_multi_layer(model,
