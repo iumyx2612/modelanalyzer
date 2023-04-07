@@ -28,7 +28,12 @@ def get_featmap_single_layer(model: Module,
     if not isinstance(target_layer, str):
         raise TypeError(f"target_layer must be of type 'str', current type {type(target_layer)}")
     model.eval()
-    layer = get_layer(model, target_layer)
+    try:
+        layer = get_layer(model, target_layer)
+    except AttributeError:
+        logging.warning(f"model does not contain layer {target_layer}, "
+                        f"skipping that layer")
+        pass
     hook = ForwardIOHook(layer)
     with torch.no_grad():
         _ = model(image)
