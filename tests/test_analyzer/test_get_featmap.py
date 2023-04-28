@@ -11,7 +11,6 @@ from tests.data.model import CNN_AttentionModel
 from modelanalyzer.analyzer.get_featmap import get_featmap_multi_layer, get_featmap_single_layer
 
 
-
 @pytest.mark.parametrize("average",
                          [True,
                           False])
