@@ -6,6 +6,7 @@ from torch.nn import Module
 
 from ..hooks import ForwardIOHook
 from ..utils import get_layer
+from ..utils.shape import nlc_to_nchw
 
 
 def get_featmap_single_layer(model: Module,
@@ -45,10 +46,9 @@ def get_featmap_single_layer(model: Module,
             # get feature map of previous layer
             feat_map_previous = hook.output
             if feat_map_previous.dim() == 4:
-                B,C,W,H = feat_map_previous.size()
-                # reshape feature map from (B,L,C) to (B,C,W,H) with L = W*H
-                feature = feat_maps.reshape(B, W, H, C)
-                feat_maps = feature.permute(0, 3, 1, 2)
+                _,_,W,H = feat_map_previous.size()
+                hw_shape = [W,H]
+                feat_maps = nlc_to_nchw(feat_maps,hw_shape)
         if average:
             feat_maps = torch.mean(feat_maps, dim=1, keepdim=True)
     return feat_maps

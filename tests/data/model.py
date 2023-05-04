@@ -1,6 +1,7 @@
 import torch.nn as nn
 
 from .layers import SelfAttention
+from modelanalyzer.utils.shape import nchw_to_nlc
 
 
 class CNNModel(nn.Module):
@@ -65,8 +66,7 @@ class CNN_AttentionModel(nn.Module):
     def forward(self, x):
         out = self.layer_1(x)
         out = self.layer_2(out)
-        B, C, H, W = out.size()
-        attention_input = out.permute(0, 2, 3, 1).contiguous().view(B, W * H, C)
+        attention_input = nchw_to_nlc(out)
         out = self.layer_3(attention_input)
         out = self.classify(out)
         return out

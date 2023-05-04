@@ -1,4 +1,6 @@
 from typing import Sequence
+
+import torch
 from torch import Tensor
 
 
@@ -6,9 +8,7 @@ __all__ = [
     "nlc_to_nchw", "nchw_to_nlc"
 ]
 
-
 # Scripts taken from OpenMMLab
-
 
 def nlc_to_nchw(x: Tensor,
                 hw_shape: Sequence[int]) -> Tensor:
@@ -39,3 +39,4 @@ def nchw_to_nlc(x: Tensor) -> Tensor:
     """
     assert len(x.shape) == 4
     return x.flatten(2).transpose(1, 2).contiguous()
+
