@@ -1,6 +1,6 @@
 import torch.nn as nn
 
-from .SelfAttention import SelfAttention
+from .layers import SelfAttention
 
 
 class CNNModel(nn.Module):
@@ -55,7 +55,7 @@ class CNN_AttentionModel(nn.Module):
             nn.ReLU(),
             nn.MaxPool2d(2, 2)
         )
-        self.layer_3 = SelfAttention(15)
+        self.layer_3 = SelfAttention(15, 10)
 
         self.classify = nn.Sequential(
             nn.Flatten(),
@@ -65,7 +65,7 @@ class CNN_AttentionModel(nn.Module):
     def forward(self, x):
         out = self.layer_1(x)
         out = self.layer_2(out)
-        B, C, W, H = out.size()
+        B, C, H, W = out.size()
         attention_input = out.permute(0, 2, 3, 1).contiguous().view(B, W * H, C)
         out = self.layer_3(attention_input)
         out = self.classify(out)

@@ -42,11 +42,11 @@ def get_featmap_single_layer(model: Module,
             index = model_children.index(layer)
             hook = ForwardIOHook(model_children[index-1])
             _ = model(image)
-            #get feature map of previous layer
+            # get feature map of previous layer
             feat_map_previous = hook.output
             if feat_map_previous.dim() == 4:
                 B,C,W,H = feat_map_previous.size()
-                #reshape feature map from (B,L,C) to (B,C,W,H) with L = W*H
+                # reshape feature map from (B,L,C) to (B,C,W,H) with L = W*H
                 feature = feat_maps.reshape(B, W, H, C)
                 feat_maps = feature.permute(0, 3, 1, 2)
         if average:
@@ -73,8 +73,3 @@ def get_featmap_multi_layer(model: Module,
         feat_map = get_featmap_single_layer(model, image, target_layer,average,input)
         feat_maps.append(feat_map)
     return feat_maps
-
-
-
-
-

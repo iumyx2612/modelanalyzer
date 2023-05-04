@@ -7,7 +7,7 @@ import torch
 from torch import Tensor
 import torchvision.transforms as transforms
 
-from tests.data.model import CNN_AttentionModel
+from ..data.model import CNN_AttentionModel
 from modelanalyzer.analyzer.get_featmap import get_featmap_multi_layer, get_featmap_single_layer
 
 
@@ -29,8 +29,8 @@ def test_get_featmap_attention( target_layer, average):
 
     output = get_featmap_single_layer(model,
                                       image,
-                                target_layer=target_layer,
-                                average=average,
+                                      target_layer=target_layer,
+                                      average=average,
                                       )
     assert isinstance(output, Tensor)
     assert output.dim() == 4
