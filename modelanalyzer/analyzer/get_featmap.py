@@ -1,3 +1,4 @@
+import numpy as np
 from typing import List
 
 import torch
@@ -40,15 +41,25 @@ def get_featmap_single_layer(model: Module,
             feat_maps = hook.input[0]
         # checking dimension of feature map
         if feat_maps.dim() == 3:
+            dims = []
             index = model_children.index(layer)
-            hook = ForwardIOHook(model_children[index-1])
-            _ = model(image)
+            feat_maps_pre = []
+            for i in range(index+1):
+                hook = ForwardIOHook(model_children[i])
+                _ = model(image)
+                # get all feature map of previous layers
+                feat_map_pre = hook.output
+                feat_maps_pre.append(feat_map_pre)
+                # get the output dimension of all previous layers
+                dims.append(feat_map_pre.dim())
+            dims = np.array(dims)
+            # find index of closest layer which has output dimension equal 4
+            index_feat_map = np.max(np.where(dims == 4))
             # get feature map of previous layer
-            feat_map_previous = hook.output
-            if feat_map_previous.dim() == 4:
-                _,_,W,H = feat_map_previous.size()
-                hw_shape = [W,H]
-                feat_maps = nlc_to_nchw(feat_maps,hw_shape)
+            feat_map_previous = feat_maps_pre[index_feat_map]
+            _,_,W,H = feat_map_previous.size()
+            hw_shape = [W,H]
+            feat_maps = nlc_to_nchw(feat_maps,hw_shape)
         if average:
             feat_maps = torch.mean(feat_maps, dim=1, keepdim=True)
     return feat_maps

@@ -58,6 +58,8 @@ class CNN_AttentionModel(nn.Module):
         )
         self.layer_3 = SelfAttention(15, 10)
 
+        self.layer_4 = SelfAttention(10,10)
+
         self.classify = nn.Sequential(
             nn.Flatten(),
             nn.LazyLinear(1)
@@ -68,5 +70,8 @@ class CNN_AttentionModel(nn.Module):
         out = self.layer_2(out)
         attention_input = nchw_to_nlc(out)
         out = self.layer_3(attention_input)
+        out = self.layer_4(out)
         out = self.classify(out)
         return out
+model = CNN_AttentionModel()
+print(model.modules())

@@ -14,7 +14,7 @@ from modelanalyzer.analyzer.get_featmap import get_featmap_multi_layer, get_feat
 @pytest.mark.parametrize("average",
                          [True,
                           False])
-@pytest.mark.parametrize("target_layer",["model.layer_3",
+@pytest.mark.parametrize("target_layer",["model.layer_4",
                                          'model.layer_1[2]'])
 
 def test_get_featmap_attention( target_layer, average):
@@ -39,7 +39,7 @@ def test_get_featmap_attention( target_layer, average):
 
 
 @pytest.mark.parametrize("target_layers",
-                         [["layer_1.0", "model.layer_3"]])
+                         [["layer_1.0", "model.layer_3",'layer_4']])
 @pytest.mark.parametrize("average",
                          [True,
                           False])
