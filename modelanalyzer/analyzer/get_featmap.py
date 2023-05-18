@@ -44,14 +44,17 @@ def get_featmap_single_layer(model: Module,
             dims = []
             index = model_children.index(layer)
             feat_maps_pre = []
+            prev_hooks = []
+            # register hooks for all previous layers
             for i in range(index+1):
-                hook = ForwardIOHook(model_children[i])
-                _ = model(image)
+                prev_hooks.append(ForwardIOHook(model_children[i]))
+            # perform forward to get all previous feature maps
+            _ = model(image)
+            for prev_hook in prev_hooks:
                 # get all feature map of previous layers
-                feat_map_pre = hook.output
-                feat_maps_pre.append(feat_map_pre)
+                feat_maps_pre.append(prev_hook.output)
                 # get the output dimension of all previous layers
-                dims.append(feat_map_pre.dim())
+                dims.append(prev_hook.output.dim())
             dims = np.array(dims)
             # find index of closest layer which has output dimension equal 4
             index_feat_map = np.max(np.where(dims == 4))
